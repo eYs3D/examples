@@ -754,6 +754,10 @@ int RegisterSettings::DM_Quality_Register_Setting_For6cm(void* hEYSD, PDEVSELINF
 int RegisterSettings::DM_Quality_Register_Setting(void* hEYSD, PDEVSELINFO pDevSelInfo, unsigned short wPID)
 {
     char *modelName = NULL;
+    unsigned int max_retry_count = 100;
+    unsigned int retry_count = 0;
+    int nRet = 0;
+    
 
     switch (wPID) {
     case APC_PID_8036:
@@ -807,14 +811,15 @@ int RegisterSettings::DM_Quality_Register_Setting(void* hEYSD, PDEVSELINFO pDevS
         return -1;
     }
     
-    printf("[%s][%d]Successfully open cfg file %s\n", __func__, __LINE__, fileName);
+    printf("[%s][%d]xxSuccessfully open cfg file %s\n", __func__, __LINE__, fileName);
     
     while (in) {
             in.getline(tmp, 255);  // delim defaults to '\n'
             if (in) {
                 unsigned short RegValue;
                 unsigned short NotValidDataRange;
-
+                unsigned short RegValueCheck = 0;
+                
                 sscanf(tmp, "%x, %x, %x", &RegAddress, &ValidDataRange, &Data);
 
                 APC_GetHWRegister(hEYSD, pDevSelInfo, RegAddress, &RegValue, FG_Address_2Byte | FG_Value_1Byte);
@@ -822,24 +827,30 @@ int RegisterSettings::DM_Quality_Register_Setting(void* hEYSD, PDEVSELINFO pDevS
                 NotValidDataRange = ~ValidDataRange;
                 RegValue = RegValue & NotValidDataRange;
                 RegValue |= Data;
-
+retry_again:
+                if (retry_count >= max_retry_count) {
+                    printf("Set config. to Register failed !! [0x%04x] != [0x%04x] [0x%04x]\n", RegAddress, RegValue, RegValueCheck);
+                    retry_count = 0;
+                    continue;
+                }
+                
                 APC_SetHWRegister(hEYSD, pDevSelInfo, RegAddress, RegValue, FG_Address_2Byte | FG_Value_1Byte);
 
                 //Sleep(5); // delay time, need fine tune in the feature
 
                 ////////////////////
 
-                unsigned short RegValueCheck = 0;
                 APC_GetHWRegister(hEYSD, pDevSelInfo, RegAddress, &RegValueCheck, FG_Address_2Byte | FG_Value_1Byte);
                 if (RegValue != RegValueCheck) {
-                    printf("Set config. to Register failed !!");
-                    return -1;
+                    retry_count++;
+                    usleep(5000);
+                    goto retry_again;
                 }
             }
     }
 
     in.close();
 
-    return 0;
+    return nRet;
 }
 

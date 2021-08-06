@@ -183,10 +183,10 @@ static void test_file_saving(EYSDImageType::Value type);
 static int TransformDepthDataType(int *nDepthDataType, bool bRectifyData);
 static unsigned int gCameraPID = 0xffff;
 
-//#define _ENABLE_INTERACTIVE_UI_ 1
+#define _ENABLE_INTERACTIVE_UI_ 1
 //#define _ENABLE_PROFILE_UI_ 1
-#define _ENABLE_FILESAVING_DEMO_UI_ 1
-#define _ENABLE_FILESAVING_DEMO_POINT_CLOUD_UI_ 1
+//#define _ENABLE_FILESAVING_DEMO_UI_ 1
+//#define _ENABLE_FILESAVING_DEMO_POINT_CLOUD_UI_ 1
 #define DEFAULT_SAVING_FRAME_COUNT 150
 
 int main(void)
