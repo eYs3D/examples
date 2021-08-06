@@ -1,4 +1,3 @@
-# FW Writer
 
 ## HW Platform
 
