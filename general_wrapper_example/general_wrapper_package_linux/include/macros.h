@@ -14,10 +14,10 @@
 
 #include <stdlib.h> // for abs
 
-#ifndef RETRY_ETRON_API
+#ifndef RETRY_APC_API
 #define RETRY_COUNT (5)
 #ifdef WIN32 // todo windows impl typeof fail
-#define RETRY_ETRON_API(exp) ([&]() {                       \
+#define RETRY_APC_API(exp) ([&]() {                       \
     int retryCount = RETRY_COUNT;                           \
     decltype (exp) _rc;                                     \
     do {                                                    \
@@ -25,7 +25,7 @@
     } while((_rc != APC_OK) && (retryCount-- > 0));     \
     return _rc;}())
 #else
-#define RETRY_ETRON_API(exp)  ({                            \
+#define RETRY_APC_API(exp)  ({                            \
     int retryCount = RETRY_COUNT;                           \
     typeof (exp) _rc;                                       \
     do    {                                                 \
