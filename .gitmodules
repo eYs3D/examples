@@ -7,3 +7,6 @@
 [submodule "DMPreview/HD-DM-Windows-SDK-Release"]
 	path = DMPreview/HD-DM-Windows-SDK-Release
 	url = git@github.com:eYs3D/HD-DM-Windows-SDK-Release.git
+[submodule "general_wrapper_example/linux"]
+	path = general_wrapper_example/linux
+	url = git@github.com:eYs3D/eys3d_wrapper_prebuilt_linux.git
